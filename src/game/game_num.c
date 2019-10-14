@@ -53,6 +53,7 @@ bool game_num_first_tech_rp_fix = false;
 bool game_num_waste_calc_fix = false;
 bool game_num_doom_stack_fix = false;
 bool game_num_reset_tform_to_max = true;
+bool game_num_soil_rounding_fix = false;
 
 uint8_t game_num_tbl_hull_w[4] = { 1, 5, 25, 125 };
 
