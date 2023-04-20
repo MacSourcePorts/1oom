@@ -70,6 +70,9 @@ void game_planet_destroy(struct game_s *g, uint8_t planet_i, player_id_t attacke
     p->have_stargate = false;
     p->shield = 0;
     p->bc_to_shield = 0;
+    if (game_num_extended_reloc_range) {
+        return;
+    }
     for (int i = 0; i < g->galaxy_stars; ++i) {
         p = &(g->planet[i]);
         if (p->reloc == planet_i) {
