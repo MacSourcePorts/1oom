@@ -1,6 +1,7 @@
 #ifndef INC_1OOM_GAME_MISC_H
 #define INC_1OOM_GAME_MISC_H
 
+#include "game.h"
 #include "game_planet.h"
 #include "game_types.h"
 #include "types.h"
@@ -31,5 +32,10 @@ extern bool game_reloc_dest_ok(const struct game_s *g, uint8_t planet_i, player_
 extern void game_rng_step(struct game_s *g);
 extern void game_turn_atmos_tform(struct planet_s *p);
 extern void game_turn_soil_enrich(struct planet_s *p, int best_tform, bool advanced);
+
+static inline int game_planet_get_pop_oper_fact(const struct game_s *g, const struct planet_s *p)
+{
+    return g->eto[p->owner].colonist_oper_factories;
+}
 
 #endif
