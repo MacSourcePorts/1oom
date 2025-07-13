@@ -6,6 +6,7 @@
 ===========
 
 The configuration options:
+    --enable-fault-finding  enables picky compiler mode
     --enable-modebug        add debugging options
     --without-samplerate    do not try to use libsamplerate
     --disable-tools         disables extra tools
