@@ -20,10 +20,13 @@ char game_save_tbl_name[NUM_ALL_SAVES][SAVE_NAME_LEN];
 static int savenamebuflen = 0;
 static char *savenamebuf = NULL;
 
+static int game_save_check_saves(void);
+
 void libsave_init(void)
 {
     savenamebuflen = FSDEV_PATH_MAX;
     savenamebuf = lib_malloc(savenamebuflen);
+    game_save_check_saves();
 }
 
 void libsave_shutdown(void)
@@ -51,7 +54,7 @@ const char *game_save_get_slot_fname(int i)
     return savenamebuf;
 }
 
-int game_save_check_saves(void)
+static int game_save_check_saves(void)
 {
     struct libsave_1oom_hdr_data_s hdr_data;
     for (int i = 0; i < NUM_ALL_SAVES; ++i) {

@@ -24,7 +24,6 @@ extern void libsave_shutdown(void);
 
 extern int libsave_1oom_read_header(const char *filename, struct libsave_1oom_hdr_data_s *hdr_data);
 extern const char *game_save_get_slot_fname(int i);
-extern int game_save_check_saves(void);
 
 struct game_s;
 extern int libsave_1oom_do_save(const char *filename, const char *savename, const struct game_s *g, int savei);
