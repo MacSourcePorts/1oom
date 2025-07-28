@@ -28,7 +28,7 @@ extern const char *game_save_get_slot_fname(int i);
 struct game_s;
 extern int libsave_1oom_do_save(const char *filename, const char *savename, const struct game_s *g, int savei);
 extern int libsave_1oom_do_load(const char *filename, struct game_s *g, int savei, char *savename);
-extern int game_save_do_load_fname(const char *filename, char *savename, struct game_s *g);
+extern int libsave_do_load_smart(const char *filename, struct game_s *g);
 extern int game_save_do_load_i(int savei/*0..NUM_ALL_SAVES-1*/, struct game_s *g);
 extern int game_save_do_save_i(int savei/*0..NUM_ALL_SAVES-1*/, const char *savename, const struct game_s *g);
 

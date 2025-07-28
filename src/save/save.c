@@ -70,9 +70,9 @@ static int game_save_check_saves(void)
     return 0;
 }
 
-int game_save_do_load_fname(const char *filename, char *savename, struct game_s *g)
+int libsave_do_load_smart(const char *filename, struct game_s *g)
 {
-    return libsave_1oom_do_load(filename, g, -1, savename);
+    return libsave_1oom_do_load(filename, g, -1, NULL);
 }
 
 int game_save_do_load_i(int savei, struct game_s *g)
