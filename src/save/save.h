@@ -8,7 +8,7 @@
 #define SAVE_NAME_LEN   20
 #define GAME_SAVE_VERSION   0
 
-struct game_save_hdr_data_s {
+struct libsave_1oom_hdr_data_s {
     uint32_t version;
     char savename[SAVE_NAME_LEN];
 };
@@ -22,15 +22,14 @@ extern char game_save_tbl_name[NUM_ALL_SAVES][SAVE_NAME_LEN];
 extern void libsave_init(void);
 extern void libsave_shutdown(void);
 
-extern int game_save_read_header(const char *filename, struct game_save_hdr_data_s *hdr_data);
+extern int libsave_1oom_read_header(const char *filename, struct libsave_1oom_hdr_data_s *hdr_data);
 extern const char *game_save_get_slot_fname(int i);
 extern int game_save_check_saves(void);
 
 struct game_s;
-extern int game_save_do_save_do(const char *filename, const char *savename, const struct game_s *g, int savei);
-extern int game_save_do_load_do(const char *filename, struct game_s *g, int savei, char *savename);
+extern int libsave_1oom_do_save(const char *filename, const char *savename, const struct game_s *g, int savei);
+extern int libsave_1oom_do_load(const char *filename, struct game_s *g, int savei, char *savename);
 extern int game_save_do_load_fname(const char *filename, char *savename, struct game_s *g);
-extern int game_save_do_save_fname(const char *filename, const char *savename, const struct game_s *g);
 extern int game_save_do_load_i(int savei/*0..NUM_ALL_SAVES-1*/, struct game_s *g);
 extern int game_save_do_save_i(int savei/*0..NUM_ALL_SAVES-1*/, const char *savename, const struct game_s *g);
 

@@ -53,12 +53,12 @@ const char *game_save_get_slot_fname(int i)
 
 int game_save_check_saves(void)
 {
-    struct game_save_hdr_data_s hdr_data;
+    struct libsave_1oom_hdr_data_s hdr_data;
     for (int i = 0; i < NUM_ALL_SAVES; ++i) {
         const char *fname = game_save_get_slot_fname(i);
         game_save_tbl_have_save[i] = false;
         game_save_tbl_name[i][0] = '\0';
-        if (game_save_read_header(fname, &hdr_data) && (hdr_data.version == GAME_SAVE_VERSION)) {
+        if (libsave_1oom_read_header(fname, &hdr_data) && (hdr_data.version == GAME_SAVE_VERSION)) {
             game_save_tbl_have_save[i] = true;
             memcpy(game_save_tbl_name[i], hdr_data.savename, SAVE_NAME_LEN);
             game_save_tbl_name[i][SAVE_NAME_LEN - 1] = '\0';
@@ -69,19 +69,14 @@ int game_save_check_saves(void)
 
 int game_save_do_load_fname(const char *filename, char *savename, struct game_s *g)
 {
-    return game_save_do_load_do(filename, g, -1, savename);
-}
-
-int game_save_do_save_fname(const char *filename, const char *savename, const struct game_s *g)
-{
-    return game_save_do_save_do(filename, savename, g, -1);
+    return libsave_1oom_do_load(filename, g, -1, savename);
 }
 
 int game_save_do_load_i(int savei, struct game_s *g)
 {
     int res;
     const char *filename = game_save_get_slot_fname(savei);
-    res = game_save_do_load_do(filename, g, savei, 0);
+    res = libsave_1oom_do_load(filename, g, savei, 0);
     return res;
 }
 
@@ -93,6 +88,6 @@ int game_save_do_save_i(int savei, const char *savename, const struct game_s *g)
         log_error("Save: failed to create user path '%s'\n", os_get_path_user());
     }
     filename = game_save_get_slot_fname(savei);
-    res = game_save_do_save_do(filename, savename, g, savei);
+    res = libsave_1oom_do_save(filename, savename, g, savei);
     return res;
 }

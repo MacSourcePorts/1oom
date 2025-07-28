@@ -163,7 +163,7 @@ static int save_out_write(const char *fname)
 
 static int savetype_de_smart(struct game_s *g, const char *fname)
 {
-    struct game_save_hdr_data_s hdr_data;
+    struct libsave_1oom_hdr_data_s hdr_data;
     FILE *fd;
     int res;
     LOG_DEBUG((2, "%s: '%s'\n", __func__, fname));
@@ -173,7 +173,7 @@ static int savetype_de_smart(struct game_s *g, const char *fname)
     }
     fclose(fd);
     fd = NULL;
-    if (game_save_read_header(fname, &hdr_data) && (hdr_data.version == GAME_SAVE_VERSION)) {
+    if (libsave_1oom_read_header(fname, &hdr_data) && (hdr_data.version == GAME_SAVE_VERSION)) {
         savetypei = SAVETYPE_NATIVE;
         res = savetype[SAVETYPE_NATIVE].decode(g, fname);
     } else if (savetype_is_moo13(g, fname)) {
@@ -2320,13 +2320,13 @@ static int savetype_de_1oom0(struct game_s *g, const char *fname)
 {
     char *sname = (*savename == '\0') ? savename : NULL;
     LOG_DEBUG((2, "%s: '%s'\n", __func__, fname));
-    return game_save_do_load_fname(fname, sname, g);
+    return libsave_1oom_do_load(fname, g, -1, sname);
 }
 
 static int savetype_en_1oom0(struct game_s *g, const char *fname)
 {
     LOG_DEBUG((2, "%s: '%s'\n", __func__, fname ? fname : "(null)"));
-    return game_save_do_save_fname(fname, savename, g);
+    return libsave_1oom_do_save(fname, savename, g, -1);
 }
 
 /* -------------------------------------------------------------------------- */
