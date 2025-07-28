@@ -6,6 +6,12 @@
 #define NUM_SAVES   6
 #define NUM_ALL_SAVES   (NUM_SAVES + 1/*continue game*/ + 1/*undo*/)
 #define SAVE_NAME_LEN   20
+#define GAME_SAVE_VERSION   0
+
+struct game_save_hdr_data_s {
+    uint32_t version;
+    char savename[SAVE_NAME_LEN];
+};
 
 #define GAME_SAVE_I_CONTINUE    (7 - 1)
 #define GAME_SAVE_I_UNDO        (8 - 1)
@@ -16,7 +22,7 @@ extern char game_save_tbl_name[NUM_ALL_SAVES][SAVE_NAME_LEN];
 extern void libsave_init(void);
 extern void libsave_shutdown(void);
 
-extern void *game_save_open_check_header(const char *filename, int i, bool update_table, char *savename);
+extern int game_save_read_header(const char *filename, struct game_save_hdr_data_s *hdr_data);
 extern const char *game_save_get_slot_fname(int i);
 extern int game_save_check_saves(void);
 

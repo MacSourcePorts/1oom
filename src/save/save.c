@@ -25,8 +25,6 @@
 #define GAME_SAVE_OFFS_VERSION  8
 #define GAME_SAVE_OFFS_NAME 16
 
-#define GAME_SAVE_VERSION   0
-
 /* -------------------------------------------------------------------------- */
 
 bool game_save_tbl_have_save[NUM_ALL_SAVES];
@@ -795,6 +793,8 @@ static void game_save_make_header(uint8_t *buf, const char *savename)
     strncpy((char *)&buf[GAME_SAVE_OFFS_NAME], savename, SAVE_NAME_LEN);
 }
 
+static void *game_save_open_check_header(const char *filename, int i, bool update_table, char *savename);
+
 static int game_save_do_save_do(const char *filename, const char *savename, const struct game_s *g, int savei)
 {
     FILE *fd;
@@ -862,9 +862,7 @@ static int game_save_do_load_do(const char *filename, struct game_s *g, int save
     return res;
 }
 
-/* -------------------------------------------------------------------------- */
-
-void *game_save_open_check_header(const char *filename, int i, bool update_table, char *savename)
+static void *game_save_open_check_header(const char *filename, int i, bool update_table, char *savename)
 {
     uint8_t hdr[GAME_SAVE_HDR_SIZE];
     FILE *fd;
@@ -902,6 +900,32 @@ void *game_save_open_check_header(const char *filename, int i, bool update_table
     return fd;
 }
 
+/* -------------------------------------------------------------------------- */
+
+int game_save_read_header(const char *filename, struct game_save_hdr_data_s *hdr_data)
+{
+    uint8_t hdr[GAME_SAVE_HDR_SIZE];
+    FILE *fd;
+    int res = 0;
+    fd = fopen(filename, "rb");
+    if (fd) {
+        if (1
+          && (fread(hdr, GAME_SAVE_HDR_SIZE, 1, fd) == 1)
+          && (memcmp(hdr, (const uint8_t *)GAME_SAVE_MAGIC, 8) == 0)
+        ) {
+            if (hdr_data != NULL) {
+                hdr_data->version = GET_LE_32(&hdr[GAME_SAVE_OFFS_VERSION]);
+                memcpy(hdr_data->savename, &hdr[GAME_SAVE_OFFS_NAME], SAVE_NAME_LEN);
+                hdr_data->savename[SAVE_NAME_LEN - 1] = '\0';
+            }
+            res = GAME_SAVE_HDR_SIZE;
+        }
+        fclose(fd);
+        fd = NULL;
+    }
+    return res;
+}
+
 const char *game_save_get_slot_fname(int i)
 {
     const char *path = os_get_path_user();
@@ -920,13 +944,15 @@ const char *game_save_get_slot_fname(int i)
 
 int game_save_check_saves(void)
 {
-    FILE *fd;
-
+    struct game_save_hdr_data_s hdr_data;
     for (int i = 0; i < NUM_ALL_SAVES; ++i) {
         const char *fname = game_save_get_slot_fname(i);
-        fd = game_save_open_check_header(fname, i, true, 0);
-        if (fd) {
-            fclose(fd);
+        game_save_tbl_have_save[i] = false;
+        game_save_tbl_name[i][0] = '\0';
+        if (game_save_read_header(fname, &hdr_data) && (hdr_data.version == GAME_SAVE_VERSION)) {
+            game_save_tbl_have_save[i] = true;
+            memcpy(game_save_tbl_name[i], hdr_data.savename, SAVE_NAME_LEN);
+            game_save_tbl_name[i][SAVE_NAME_LEN - 1] = '\0';
         }
     }
     return 0;
