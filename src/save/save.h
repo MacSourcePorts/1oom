@@ -30,6 +30,7 @@ extern void libsave_init(void);
 extern void libsave_shutdown(void);
 
 extern int libsave_1oom_read_header(const char *filename, struct libsave_1oom_hdr_data_s *hdr_data);
+extern const char *libsave_1oom_get_slot_fname(int i, char *buf, int buflen);
 extern const char *game_save_get_slot_fname(int i);
 
 struct game_s;

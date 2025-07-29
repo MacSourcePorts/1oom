@@ -44,18 +44,7 @@ void libsave_shutdown(void)
 
 const char *game_save_get_slot_fname(int i)
 {
-    const char *path = os_get_path_user();
-    char namebuf[16];
-    int res;
-    if (!os_get_fname_save(namebuf, i + 1)) {
-        sprintf(namebuf, "1oom_save%i.bin", i + 1);
-    }
-    res = util_concat_buf(savenamebuf, savenamebuflen, path, FSDEV_DIR_SEP_STR, namebuf, NULL);
-    if (res < 0) {
-        log_error("Save: BUG: save name buffer too small by %i bytes\n", -res);
-        return NULL;
-    }
-    return savenamebuf;
+    return libsave_1oom_get_slot_fname(i, savenamebuf, savenamebuflen);
 }
 
 static int game_save_check_saves(void)
