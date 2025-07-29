@@ -1015,3 +1015,88 @@ int libsave_moo13_encode(const struct game_s *g, const char *fname)
     savebuf = NULL;
     return 0;
 }
+
+const char *libsave_moo13_get_slot_fname(int i, char *buf, int buflen)
+{
+    const char *path = os_get_path_user();
+    char namebuf[16];
+    int res;
+    sprintf(namebuf, "SAVE%i.GAM", i + 1);
+    res = util_concat_buf(buf, buflen, path, FSDEV_DIR_SEP_STR, namebuf, NULL);
+    if (res < 0) {
+        log_error("Save: BUG: save name buffer too small by %i bytes\n", -res);
+        return NULL;
+    }
+    return buf;
+}
+
+const char *libsave_moo13_get_cfg_fname(char *buf, int buflen)
+{
+    const char *path = os_get_path_user();
+    char namebuf[16];
+    int res;
+    sprintf(namebuf, "CONFIG.MOO");
+    res = util_concat_buf(buf, buflen, path, FSDEV_DIR_SEP_STR, namebuf, NULL);
+    if (res < 0) {
+        log_error("Save: BUG: config name buffer too small by %i bytes\n", -res);
+        return NULL;
+    }
+    return buf;
+}
+
+void libsave_moo13_check_saves(void)
+{
+    uint8_t *buf = NULL;
+    char *cfgnamebuf = NULL;
+    cfgnamebuf = lib_malloc(FSDEV_PATH_MAX);
+    buf = lib_malloc(SAVE_CMOO_LEN);
+    if (1
+      && libsave_moo13_get_cfg_fname(cfgnamebuf, FSDEV_PATH_MAX)
+      && (try_load_len(cfgnamebuf, buf, SAVE_CMOO_LEN) == SAVE_CMOO_LEN)
+    ) {
+        for (int i = 0; i < 6; ++i) {
+            game_save_tbl_have_save[i] = buf[save_cmoo_havesave_offs(i)];
+            strncpy(game_save_tbl_name[i], (char *)&buf[save_cmoo_savename_offs(i)], SAVE_NAME_LEN);
+            game_save_tbl_name[i][SAVE_NAME_LEN - 1] = '\0';
+        }
+        if (libsave_moo13_get_slot_fname(6, cfgnamebuf, FSDEV_PATH_MAX) != NULL){
+            if (libsave_moo13_check(NULL, cfgnamebuf)) {
+                game_save_tbl_have_save[6] = true;
+            }
+        }
+    } else {
+        log_error("Save: Failed to read %s\n", cfgnamebuf);
+    }
+    lib_free(buf);
+    lib_free(cfgnamebuf);
+}
+
+void libsave_moo13_cfg_set_name(int savei, const char *savename)
+{
+    char *cfgnamebuf = NULL;
+    if ((savei < 0) || (savei > 5)) {
+        return;
+    }
+    cfgnamebuf = lib_malloc(FSDEV_PATH_MAX);
+    if (libsave_moo13_get_cfg_fname(cfgnamebuf, FSDEV_PATH_MAX)) {
+        FILE *out = NULL;
+        uint8_t *buf = NULL;
+        buf = lib_malloc(SAVE_CMOO_LEN);
+        if (try_load_len(cfgnamebuf, buf, SAVE_CMOO_LEN) != SAVE_CMOO_LEN) {
+            /* */
+        }
+        out = fopen(cfgnamebuf, "wb");
+        game_save_tbl_have_save[savei] = true;
+        buf[save_cmoo_havesave_offs(savei)] = true;
+        strncpy(game_save_tbl_name[savei], savename, SAVE_NAME_LEN);
+        strncpy((char *)&buf[save_cmoo_savename_offs(savei)], savename, SAVE_NAME_LEN);
+        game_save_tbl_name[savei][SAVE_NAME_LEN - 1] = '\0';
+        buf[save_cmoo_savename_offs(savei) + SAVE_NAME_LEN - 1] = '\0';
+        if (out != NULL) {
+            fwrite(buf, SAVE_CMOO_LEN, 1, out);
+            fclose(out);
+        }
+        lib_free(buf);
+    }
+    lib_free(cfgnamebuf);
+}

@@ -31,8 +31,11 @@ extern void libsave_shutdown(void);
 
 extern int libsave_1oom_read_header(const char *filename, struct libsave_1oom_hdr_data_s *hdr_data);
 extern const char *libsave_1oom_get_slot_fname(int i, char *buf, int buflen);
+extern const char *libsave_moo13_get_slot_fname(int i, char *buf, int buflen);
 extern void libsave_1oom_check_saves(void);
+extern void libsave_moo13_check_saves(void);
 extern const char *libsave_get_slot_fname(int i);
+extern void libsave_moo13_cfg_set_name(int savei, const char *savename);
 
 struct game_s;
 
