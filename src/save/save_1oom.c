@@ -922,3 +922,19 @@ const char *libsave_1oom_get_slot_fname(int i, char *buf, int buflen)
     }
     return buf;
 }
+
+void libsave_1oom_check_saves(void)
+{
+    struct libsave_1oom_hdr_data_s hdr_data;
+    char *savenamebuf = NULL;
+    savenamebuf = lib_malloc(FSDEV_PATH_MAX);
+    for (int i = 0; i < NUM_ALL_SAVES; ++i) {
+        const char *fname = libsave_1oom_get_slot_fname(i, savenamebuf, FSDEV_PATH_MAX);
+        if (libsave_1oom_read_header(fname, &hdr_data) && (hdr_data.version == GAME_SAVE_VERSION)) {
+            game_save_tbl_have_save[i] = true;
+            memcpy(game_save_tbl_name[i], hdr_data.savename, SAVE_NAME_LEN);
+            game_save_tbl_name[i][SAVE_NAME_LEN - 1] = '\0';
+        }
+    }
+    lib_free(savenamebuf);
+}

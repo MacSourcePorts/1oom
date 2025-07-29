@@ -49,17 +49,11 @@ const char *game_save_get_slot_fname(int i)
 
 static int game_save_check_saves(void)
 {
-    struct libsave_1oom_hdr_data_s hdr_data;
     for (int i = 0; i < NUM_ALL_SAVES; ++i) {
-        const char *fname = game_save_get_slot_fname(i);
         game_save_tbl_have_save[i] = false;
         game_save_tbl_name[i][0] = '\0';
-        if (libsave_1oom_read_header(fname, &hdr_data) && (hdr_data.version == GAME_SAVE_VERSION)) {
-            game_save_tbl_have_save[i] = true;
-            memcpy(game_save_tbl_name[i], hdr_data.savename, SAVE_NAME_LEN);
-            game_save_tbl_name[i][SAVE_NAME_LEN - 1] = '\0';
-        }
     }
+    libsave_1oom_check_saves();
     return 0;
 }
 
