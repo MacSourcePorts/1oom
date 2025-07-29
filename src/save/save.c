@@ -76,6 +76,9 @@ static int game_save_check_saves(void)
 
 int libsave_do_load_smart(const char *filename, struct game_s *g)
 {
+    if (savetype_is_moo13(g, filename) && !savetype_de_moo13(g, filename)) {
+        return 0;
+    }
     return libsave_1oom_do_load(filename, g, -1, NULL);
 }
 
