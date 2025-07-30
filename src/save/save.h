@@ -36,13 +36,13 @@ extern const char *game_save_get_slot_fname(int i);
 
 struct game_s;
 
-extern bool savetype_is_moo13(struct game_s *g, const char *fname);
+extern bool savetype_is_moo13(const struct game_s *g, const char *fname);
 extern int savetype_de_moo13(struct game_s *g, const char *fname);
-extern int savetype_en_moo13(struct game_s *g, const char *fname);
+extern int savetype_en_moo13(const struct game_s *g, const char *fname);
 
-extern bool savetype_is_text(struct game_s *g, const char *fname);
+extern bool savetype_is_text(const struct game_s *g, const char *fname);
 extern int savetype_de_text(struct game_s *g, const char *fname);
-extern int savetype_en_text(struct game_s *g, const char *fname);
+extern int savetype_en_text(const struct game_s *g, const char *fname);
 
 extern int libsave_1oom_do_save(const char *filename, const char *savename, const struct game_s *g, int savei);
 extern int libsave_1oom_do_load(const char *filename, struct game_s *g, int savei, char *savename);

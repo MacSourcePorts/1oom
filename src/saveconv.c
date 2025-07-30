@@ -38,12 +38,12 @@ typedef enum {
 
 static int savetype_de_smart(struct game_s *g, const char *fname);
 static int savetype_de_1oom0(struct game_s *g, const char *fname);
-static int savetype_en_1oom0(struct game_s *g, const char *fname);
+static int savetype_en_1oom0(const struct game_s *g, const char *fname);
 
 static const struct {
     const char *name;
     int (*decode)(struct game_s *g, const char *fname); /* to native */
-    int (*encode)(struct game_s *g, const char *fname);
+    int (*encode)(const struct game_s *g, const char *fname);
     uint8_t flags;
     savetype_t othertype;
 } savetype[SAVETYPE_NUM] = {
@@ -145,7 +145,7 @@ static int savetype_de_1oom0(struct game_s *g, const char *fname)
     return libsave_1oom_do_load(fname, g, -1, sname);
 }
 
-static int savetype_en_1oom0(struct game_s *g, const char *fname)
+static int savetype_en_1oom0(const struct game_s *g, const char *fname)
 {
     LOG_DEBUG((2, "%s: '%s'\n", __func__, fname ? fname : "(null)"));
     return libsave_1oom_do_save(fname, savename, g, -1);

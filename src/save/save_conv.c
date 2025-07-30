@@ -107,7 +107,7 @@ static int try_load_len(const char *fname, uint8_t *buf, int wantlen)
 #define SAVE_MOO13_LEN  59036
 #define SAVE_CMOO_LEN   154
 
-bool savetype_is_moo13(struct game_s *g, const char *fname)
+bool savetype_is_moo13(const struct game_s *g, const char *fname)
 {
     uint16_t w;
     int len;
@@ -703,7 +703,7 @@ static int savetype_en_moo13_sd(const shipdesign_t *sd, int sb)
     return 0;
 }
 
-int savetype_en_moo13(struct game_s *g, const char *fname)
+int savetype_en_moo13(const struct game_s *g, const char *fname)
 {
     LOG_DEBUG((2, "%s: '%s'\n", __func__, fname ? fname : "(null)"));
     memset(save2buf, 0, SAVE_MOO13_LEN);
@@ -918,7 +918,7 @@ int savetype_en_moo13(struct game_s *g, const char *fname)
         return -1;
     }
     {
-        gameevents_t *ev = &(g->evn);
+        const gameevents_t *ev = &(g->evn);
         const int evb = 0xde80;
         M13_SET_16(ev->year, evb + 0x000);
         M13_SET_TBL_BVN_16(ev->done, evb + 0x004, 20);
@@ -1693,7 +1693,7 @@ static int savetype_de_text_parse_line(struct game_s *g, const char *fname, char
     return 0;
 }
 
-bool savetype_is_text(struct game_s *g, const char *fname)
+bool savetype_is_text(const struct game_s *g, const char *fname)
 {
     FILE *fd = NULL;
     int len;
@@ -1877,7 +1877,7 @@ static void savetype_en_text_monster(const monster_t *m, struct text_dump_prefix
     OUTLINEI("nuked", m->nuked);
 }
 
-int savetype_en_text(struct game_s *g, const char *fname)
+int savetype_en_text(const struct game_s *g, const char *fname)
 {
     struct text_dump_prefix_s tp[1];
     LOG_DEBUG((2, "%s: '%s'\n", __func__, fname));
