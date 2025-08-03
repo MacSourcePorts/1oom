@@ -18,4 +18,7 @@ extern bool ui_qol_numeric_key_bindings;
 /* Move messages so that the selected star is always visible. */
 extern bool ui_qol_starmap_msg_pos;
 
+extern void ui_enable_fix_bugs(void);
+extern void ui_enable_fix_qol(void);
+
 #endif
