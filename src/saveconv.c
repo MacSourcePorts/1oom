@@ -262,6 +262,7 @@ static int main_early_init(void)
         return 1;
     }
     gameptr = lib_malloc(sizeof(struct game_s));
+    save_conv_init();
     libsave_init();
     return 0;
 }
@@ -277,6 +278,7 @@ static int main_init(void)
 static void main_shutdown(void)
 {
     libsave_shutdown();
+    save_conv_shutdown();
     lib_free(gameptr);
     os_shutdown();
 }

@@ -26,7 +26,6 @@ static int game_save_check_saves(void);
 
 void libsave_init(void)
 {
-    save_conv_init();
     savenamebuflen = FSDEV_PATH_MAX;
     savenamebuf = lib_malloc(savenamebuflen);
     game_save_check_saves();
@@ -34,7 +33,6 @@ void libsave_init(void)
 
 void libsave_shutdown(void)
 {
-    save_conv_shutdown();
     lib_free(savenamebuf);
     savenamebuf = NULL;
     savenamebuflen = 0;
