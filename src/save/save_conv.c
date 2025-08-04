@@ -109,21 +109,22 @@ static int try_load_len(const char *fname, uint8_t *buf, int wantlen)
 
 bool savetype_is_moo13(const struct game_s *g, const char *fname)
 {
-    uint16_t w;
-    int len;
-    if ((len = try_load_len(fname, save2buf, SAVE_MOO13_LEN)) <= 0) {
-        return false;
+    bool res = true;
+    if (try_load_len(fname, save2buf, SAVE_MOO13_LEN) <= 0) {
+        res = false;
     }
     if (0
-      || ((w = GET_LE_16(&save2buf[0xe2d2])) < 2) || (w > 6)
-      || ((w = GET_LE_16(&save2buf[0xe2d4])) < 0) || (w > 4)
-      || ((w = GET_LE_16(&save2buf[0xe2d6])) < 24) || (w > 108)
-      || ((w = GET_LE_16(&save2buf[0xe2d8])) < 0) || (w > 3)
-      || ((w = GET_LE_16(&save2buf[0xe238])) < 0) || (w > 4)
+      || (GET_LE_16(&save2buf[0xe2d2]) < 2) || (GET_LE_16(&save2buf[0xe2d2]) > 6)
+      || (GET_LE_16(&save2buf[0xe2d4]) > 4)
+      || (GET_LE_16(&save2buf[0xe2d6]) < 24) || (GET_LE_16(&save2buf[0xe2d6]) > 108)
+      || (GET_LE_16(&save2buf[0xe2d8]) > 3)
+      || (GET_LE_16(&save2buf[0xe238]) > 4)
+      || (GET_LE_16(&save2buf[0xe1b6]) > 259)
+      || (GET_LE_16(&save2buf[0xe1b8]) > 99)
     ) {
-        return false;
+        res = false;
     }
-    return true;
+    return res;
 }
 
 #define M13_GET_8(item_, addr_)     item_ = save2buf[addr_]
@@ -141,16 +142,6 @@ bool savetype_is_moo13(const struct game_s *g, const char *fname)
         uint16_t t_; \
         t_ = GET_LE_16(&save2buf[addr_]); \
         if (t_ == 0) { t_ = PLAYER_NONE; } else { --t_; } \
-        item_ = t_; \
-    } while (0)
-#define M13_GET_16_CHECK(item_, addr_, l_, h_) \
-    do { \
-        int t_; \
-        t_ = GET_LE_16(&save2buf[addr_]); \
-        if ((t_ < l_) || (t_ > h_)) { \
-            log_error( #item_ " at 0x%04x is %i and not in range %i..%i\n", addr_, t_, l_, h_); \
-            return -1; \
-        } \
         item_ = t_; \
     } while (0)
 #define M13_GET_TBL_16(item_, addr_) \
@@ -249,20 +240,20 @@ int savetype_de_moo13(struct game_s *g, const char *fname)
         memset(g, 0, sizeof(*g));
         g->gaux = t;
     }
-    M13_GET_16_CHECK(g->players, 0xe2d2, 2, 6);
+    M13_GET_16(g->players, 0xe2d2);
     g->is_ai[0] = ((1 << g->players) - 1) & ~1;
     g->active_player = PLAYER_0;
-    M13_GET_16_CHECK(g->difficulty, 0xe2d4, 0, 4);
-    M13_GET_16_CHECK(g->galaxy_size, 0xe2d8, 0, 3);
-    M13_GET_16_CHECK(g->nebula_num, 0xe238, 0, 4);
-    M13_GET_16_CHECK(g->galaxy_stars, 0xe2d6, 24, 108);
+    M13_GET_16(g->difficulty, 0xe2d4);
+    M13_GET_16(g->galaxy_size, 0xe2d8);
+    M13_GET_16(g->nebula_num, 0xe238);
+    M13_GET_16(g->galaxy_stars, 0xe2d6);
     M13_GET_16(g->galaxy_w, 0xe2da);
     M13_GET_16(g->galaxy_h, 0xe2dc);
     M13_GET_16(g->galaxy_maxx, 0xe2de);
     M13_GET_16(g->galaxy_maxy, 0xe2e0);
     M13_GET_16(g->year, 0xe232);
-    M13_GET_16_CHECK(g->enroute_num, 0xe1b6, 0, 259);
-    M13_GET_16_CHECK(g->transport_num, 0xe1b8, 0, 99);
+    M13_GET_16(g->enroute_num, 0xe1b6);
+    M13_GET_16(g->transport_num, 0xe1b8);
     M13_GET_16(g->end, 0xe686);
     M13_GET_16_OWNER(g->winner, 0xe688);
     M13_GET_16(g->guardian_killer, 0xe68a);
@@ -426,7 +417,7 @@ int savetype_de_moo13(struct game_s *g, const char *fname)
         M13_GET_TBL_16(e->tech.project, eb + 0x332 + 0x30);
         M13_GET_TBL_32(e->tech.cost, eb + 0x332 + 0x3c);
         M13_GET_TBL_16(e->tech.completed, eb + 0x332 + 0x54);
-        M13_GET_16_CHECK(e->shipdesigns_num, eb + 0x3a0, 0, 6);
+        M13_GET_16(e->shipdesigns_num, eb + 0x3a0);
         for (int j = 0; j < g->galaxy_stars; ++j) {
             fleet_orbit_t *r = &(e->orbit[j]);
             int ob;
