@@ -55,8 +55,8 @@ static const struct {
     },
     { /* SAVETYPE_MOO13 */
         "MOO v1.3",
-        savetype_de_moo13,
-        savetype_en_moo13,
+        libsave_moo13_decode,
+        libsave_moo13_encode,
         0, SAVETYPE_NATIVE
     },
     { /* SAVETYPE_1OOM0 */
@@ -113,9 +113,9 @@ static int savetype_de_smart(struct game_s *g, const char *fname)
     if (libsave_1oom_read_header(fname, &hdr_data) && (hdr_data.version == GAME_SAVE_VERSION)) {
         savetypei = SAVETYPE_NATIVE;
         res = savetype[SAVETYPE_NATIVE].decode(g, fname);
-    } else if (savetype_is_moo13(g, fname)) {
+    } else if (libsave_moo13_check(g, fname)) {
         savetypei = SAVETYPE_MOO13;
-        res = savetype_de_moo13(g, fname);
+        res = libsave_moo13_decode(g, fname);
     } else if (savetype_is_text(g, fname)) {
         savetypei = SAVETYPE_TEXT;
         res = savetype_de_text(g, fname);

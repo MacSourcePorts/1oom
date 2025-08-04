@@ -36,9 +36,9 @@ extern const char *game_save_get_slot_fname(int i);
 
 struct game_s;
 
-extern bool savetype_is_moo13(const struct game_s *g, const char *fname);
-extern int savetype_de_moo13(struct game_s *g, const char *fname);
-extern int savetype_en_moo13(const struct game_s *g, const char *fname);
+extern bool libsave_moo13_check(const struct game_s *g, const char *fname);
+extern int libsave_moo13_decode(struct game_s *g, const char *fname);
+extern int libsave_moo13_encode(const struct game_s *g, const char *fname);
 
 extern bool savetype_is_text(const struct game_s *g, const char *fname);
 extern int savetype_de_text(struct game_s *g, const char *fname);
