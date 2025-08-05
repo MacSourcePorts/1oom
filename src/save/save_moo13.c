@@ -12,6 +12,7 @@
 #include "log.h"
 #include "os.h"
 #include "save.h"
+#include "save_moo13_cfg.h"
 #include "util.h"
 
 /* -------------------------------------------------------------------------- */
@@ -46,7 +47,6 @@ static int try_load_len(const char *fname, uint8_t *buf, int wantlen)
 /* -------------------------------------------------------------------------- */
 
 #define SAVE_MOO13_LEN  59036
-#define SAVE_CMOO_LEN   154
 
 bool libsave_moo13_check(const struct game_s *g, const char *fname)
 {
